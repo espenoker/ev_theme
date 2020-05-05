@@ -51,6 +51,7 @@ if ( ! function_exists( 'ev_setup' ) ) :
 		register_nav_menus(
 			array(
 				'menu-1' => esc_html__( 'Primary', 'ev' ),
+				'menu-2' => esc_html__( 'Secondary', 'ev'),
 			)
 		);
 
@@ -143,12 +144,14 @@ add_action( 'widgets_init', 'ev_widgets_init' );
  * Enqueue scripts and styles.
  */
 function ev_scripts() {
-	wp_enqueue_style( 'ev-style', get_stylesheet_uri(), array(), _S_VERSION );
-	wp_style_add_data( 'ev-style', 'rtl', 'replace' );
+	wp_enqueue_style( 'ev-style', get_template_directory_uri() . '/css/app.css', array(), _S_VERSION );
 
 	wp_enqueue_script( 'ev-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 
 	wp_enqueue_script( 'ev-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), _S_VERSION, true );
+
+	wp_enqueue_script( 'ev-script', get_template_directory_uri() . '/js/app.js', array(), _S_VERSION, true );
+
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -183,3 +186,5 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
 
+// disable for posts
+add_filter('use_block_editor_for_post', '__return_false', 10);
