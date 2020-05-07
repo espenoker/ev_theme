@@ -10,25 +10,41 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+	<main>
 
 		<?php
 		while ( have_posts() ) :
-			the_post();
+			the_post(); ?>
+			<section class="container-fluid">
+				<div class="row">
+					<div class="col-md-2 offset-md-1">
+					<p><?php
+							$category = get_the_category(); 
+							echo $category[0]->cat_name;
+							?>
+						</p>
+						<time datetime="<?php echo get_the_date('c'); ?>" itemprop="datePublished"><?php echo get_the_date('F j'); ?></br><?php echo get_the_date('Y'); ?></time>
+					</div>
+					<div class="col-md-6">
+						<h1><?php the_title(); ?></h1>
+						<?php the_content(); ?>
+					</div>
+					<div class="col-md-2 offset-md-1">
+						<a href="<?php the_field('newslink', 'option') ?>" class="link_button">Overview</a>
+					</div>
+				</div>
+			</section>
 
-			get_template_part( 'template-parts/content', get_post_type() );
+		
 
-			the_post_navigation(
+			<?php the_post_navigation(
 				array(
 					'prev_text' => '<span class="nav-subtitle">' . esc_html__( 'Previous:', 'ev' ) . '</span> <span class="nav-title">%title</span>',
 					'next_text' => '<span class="nav-subtitle">' . esc_html__( 'Next:', 'ev' ) . '</span> <span class="nav-title">%title</span>',
 				)
 			);
 
-			// If comments are open or we have at least one comment, load up the comment template.
-			if ( comments_open() || get_comments_number() ) :
-				comments_template();
-			endif;
+			
 
 		endwhile; // End of the loop.
 		?>
@@ -36,5 +52,4 @@ get_header();
 	</main><!-- #main -->
 
 <?php
-get_sidebar();
 get_footer();

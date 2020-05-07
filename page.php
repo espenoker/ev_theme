@@ -16,6 +16,7 @@ get_header();
 ?>
 <main>
 <?php	while ( have_posts() ) : the_post(); ?>
+
 <?php if ( have_rows('sections')): ?>
 <?php while (have_rows('sections')): the_row(); ?>
 	<?php if( get_row_layout() == 'title_section_frontpage_top' ): ?>
@@ -146,7 +147,7 @@ get_header();
 		   <div class="col-md-5 offset-md-1">
 			   <h3><?php the_sub_field('title'); ?></h3>
 		   </div>
-		   <div class="col-md-5">
+		   <div class="col-md-5 col-xxl-4">
 			   <p><?php the_sub_field('text'); ?></p>
 			   <?php if( $link ): 
 					$link_url = $link['url'];
@@ -247,42 +248,337 @@ get_header();
 				<?php endif; ?>	
 			</div>
 	   	</div>
-	</section>			   
+	</section>
+	<?php elseif( get_row_layout() == 'title_section_1-1_image' ): 
+	$image = get_sub_field('image');
+	?>
+	<section class="container-fluid title-section">
+        <div class="row">
+            <div class="col-md-5 offset-md-1">
+				<h1><span><?php the_sub_field('supertitle'); ?></span><?php the_sub_field('title'); ?></h1>
+            </div>
+            <div class="col-md-5">
+                <div class="image_wrapper aspect-ratio ar-1-1">
+					<?php echo wp_get_attachment_image( $image['ID'], 'full' ); ?>
+                </div>
+            </div>
+        </div>
+    </section>		
+	<?php elseif( get_row_layout() == 'section_2text_1image' ): 
+	$image = get_sub_field('image');
+	?>
+	<section class="container-fluid">
+        <div class="row">
+            <div class="col-md-7  bleed-left">
+				<?php echo wp_get_attachment_image( $image['ID'], 'full' ); ?>
+            </div>
+            <div class="col-md-3 offset-md-1">
+                <h3><?php the_sub_field('title_1'); ?></h3>
+                <p><?php the_sub_field('text_1'); ?></p>
+            </div>
+            <div class="col-md-5 offset-md-1">
+				<h3><?php the_sub_field('title_2'); ?></h3>
+                <p><?php the_sub_field('text_2'); ?></p>
+			</div>
+        </div>
+    </section>	 
+	<?php elseif( get_row_layout() == 'section_2text_1image_2' ): 
+	$image = get_sub_field('image');
+	?>
+	<section class="container-fluid">
+        <div class="row">
+			<div class="col-md-7 bleed-left">
+				<div class="row no-gutters">
+					<div class="col-md-10 offset-md-2">
+						<h3><?php the_sub_field('title_1'); ?></h3>
+						<p><?php the_sub_field('text_1'); ?></p>
+					</div>
+					<div class="col-md-12 bleed-left">
+						<?php echo wp_get_attachment_image( $image['ID'], 'full' ); ?>
+					</div>
+				</div>
+			</div>
+            
+            <div class="col-md-3 offset-md-1">
+				<h3><?php the_sub_field('title_2'); ?></h3>
+                <p><?php the_sub_field('text_2'); ?></p>
+			</div>
+        </div>
+    </section>	   
+	<?php elseif( get_row_layout() == 'team' ): ?>
+		<section class="container-fluid">
+		<div class="row">
+	
+	<?php 
+	$args = array (
+		'post_type' => 'team',
+	);
 
+	$the_query = new WP_Query( $args ); ?>
+
+	<?php if ( $the_query->have_posts() ) : ?>	
+
+	<?php // Get the taxonomy's terms
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'team_location',
+				'hide_empty' => true,
+			)
+		);
+	?>
+
+			<div class="col-md-10 offset-md-1 container-fluid">
+			<h3>The People</h3>
+			
+				<div class="row no-gutters">
+					<div class="col-md-2">
+						<ul>
+						<?php if ( ! empty( $terms ) && is_array( $terms ) ) {
+							foreach ( $terms as $term ) { ?>
+								<li>
+									<a href="#" data-location="<?php echo $term->name; ?>"><?php echo $term->name; ?></a>
+								</li>
+						<?php } }  ?>
+
+						<ul>
+					</div>
+					<div class="col-md-10">
+					<div class="row ">
+					<?php while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
+					<?php $location = get_field('location'); ?>
+						<div class="col-md-6" data-location="<?php echo esc_html( $location->name ); ?>">
+						<a href="#" data-toggle="modal" data-target="#<?php echo str_replace(' ', '', get_the_title()); ?>">
+							<div class="image_wrapper aspect-ratio ar-1-1">
+								<?php the_post_thumbnail('full'); ?>
+							</div>
+						</a>
+						<h5><?php the_title(); ?></h5>
+						<p><?php the_field('title'); ?></p>
+						<a href="#" data-toggle="modal" data-target="#<?php echo str_replace(' ', '', get_the_title()); ?>">
+								+
+						</a>
+						<div class="modal fade" id="<?php echo str_replace(' ', '', get_the_title()); ?>" tabindex="-1" role="dialog" aria-labelledby="<?php echo str_replace(' ', '', get_the_title()); ?>" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content blue">
+									
+										<a href="#close" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+										</a>
+							
+
+									<div class="modal-body">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-md-3 offset-md-1">
+													<h2><?php the_title(); ?></h2>
+													<p><?php the_field('title'); ?></p>
+													<?php 
+													$location = get_field('location');
+													if( $location ): ?>
+														<p><?php echo esc_html( $location->name ); ?></p>
+													<?php endif; ?>
+													<p><a href="mailto:<?php the_field('email'); ?>"><?php the_field('email'); ?></a></p>
+													<p><a href="<?php the_field('link'); ?>"><?php the_field('link_text'); ?></a></p>
+												</div>
+												<div class="col-md-6 offset-md-1">
+													<?php the_field('bio'); ?>
+												</div>
+											</div>
+										</div>
+									</div>
+
+
+								</div>
+							</div>
+						</div>
+
+						</div>
+						<?php endwhile; ?>
+							
+							
+						</div>
+					</div>
+			</div>
+		
+		<?php wp_reset_postdata(); ?>
+		
+		<?php else : ?>
+			<p><?php _e( 'Sorry, no team members yet.' ); ?></p>
+		<?php endif; ?>
+		</div>
+	</section>
+	<?php elseif( get_row_layout() == '3_postobjects' ): ?>
+
+	<section class="container-fluid">
+            <div class="row">
+				<?php
+
+				$post_object1 = get_sub_field('post_1');
+
+				if( $post_object1 ): 
+
+				$post = $post_object1;
+				setup_postdata( $post ); 
+
+				?>
+				<div class="col-md-10 offset-md-1">
+                    <div class="row">    
+                        <div class="col-md-6">
+							<div class="image_wrapper aspect-ratio ar-1-1">
+								<?php the_post_thumbnail('full'); ?>
+							</div>
+                        </div>
+                        <div class="col-md-6">
+                            <h3><?php the_field('project_title'); ?></h3>
+                            <p><?php the_field('project_description'); ?></p>
+                            <a class="link_button" href="<?php the_permalink(); ?>">Learn more</a>
+                        </div>
+                    </div>
+                </div>
+				
+				<?php wp_reset_postdata(); ?>
+				<?php endif; ?>
+				
+				<?php
+
+				$post_object2 = get_sub_field('post_2');
+
+				if( $post_object2 ): 
+
+				$post = $post_object2;
+				setup_postdata( $post ); 
+
+				?>
+                <div class="col-md-5 offset-md-1">
+                    <div class="image_wrapper aspect-ratio ar-1-1">
+						<?php the_post_thumbnail('full'); ?>
+                    </div>
+                    <h3><?php the_field('project_title'); ?></h3>
+					<p><?php the_field('project_description'); ?></p>
+					<a class="link_button" href="<?php the_permalink(); ?>">Learn more</a>
+                </div>
+				<?php wp_reset_postdata(); ?>
+				<?php endif; ?>
+
+                <?php
+
+				$post_object3 = get_sub_field('post_3');
+
+				if( $post_object3 ): 
+
+				$post = $post_object3;
+				setup_postdata( $post ); 
+
+				?>
+                <div class="col-md-5">
+                    <div class="image_wrapper aspect-ratio ar-1-1">
+						<?php the_post_thumbnail('full'); ?>
+                    </div>
+                    <h3><?php the_field('project_title'); ?></h3>
+					<p><?php the_field('project_description'); ?></p>
+					<a class="link_button" href="<?php the_permalink(); ?>">Learn more</a>
+                </div>
+				<?php wp_reset_postdata(); ?>
+				<?php endif; ?>
+            </div>
+        </section>
 	<?php endif; ?>
+
 
 <?php endwhile; ?>
 <?php endif; ?>
 
-<section class="container-fluid title-section">
-        <div class="row">
-            <div class="col-md-5 offset-md-1">
-                <h1><span>About EV</span>EV Private Equity is an independent growth equity firm dedicated to creating value and driving superior returns for our investors.</h1>
-            </div>
-            <div class="col-md-5">
-                <div class="image_wrapper aspect-ratio ar-1-1">
-                    <img src="img/about.png">
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="container-fluid">
-        <div class="row">
-            <div class="col-md-7  bleed-left">
-                <img src="img/vision.png">
-            </div>
-            <div class="col-md-3 offset-md-1">
-                <h3>Vision</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In auctor tincidunt ipsum, ut eleifend nisi malesuada quis. Pellentesque vestibulum erat est, sit amet molestie felis lacinia vitae.</p>
-            </div>
-            <div class="col-md-5 offset-md-1">
-                <h3>Values</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In auctor tincidunt ipsum, ut eleifend nisi malesuada quis. Pellentesque vestibulum erat est, sit amet molestie felis lacinia vitae. Sed tempus ante a mattis rutrum. Donec tempus molestie eros pulvinar tristique. Integer eu turpis consectetur, consequat eros eget, semper enim.</p>
-            </div>
-        </div>
-    </section>
-   
+<?php
+if (is_page( 'Investments' ) ): ?>
+<section class="container-fluid">
+	<div class="row">
+		<div class="col-md-10 offset-md-1">
+			<h3>Portfolio</h3>
+			<ul class="toggle-tabs">
+				<li class="active-tab">Current Investments</li>
+				<li>Exited Investments</li>
+			</ul>
+			<div class="tabbed-content-wrap">
+				<?php 
+				$args = array (
+					'post_type' => 'portfolio',
+					'posts_per_page' => '10',
+					'meta_key' => 'investment_status',
+					'meta_value' => 'current_investments'
+				);
+				$the_query = new WP_Query( $args ); 
+				?>
+				
+				<?php if ( $the_query->have_posts() ) : ?>	
+					<div class="content-box active-content-box col newslist container-fluid" id="current_investments">
+							
+						<?php while ( $the_query->have_posts() ) : $the_query->the_post(); 
+						$image = get_field('logo');
+						?>
+						
+						<div class="news-item row ">
+							<div class="col-md-2 ">
+								<?php echo wp_get_attachment_image( $image['ID'], 'full' ); ?>
+							</div>					
+							<div class="col-md-10 col-lg-6">
+								<h5><?php the_title(); ?></h5>
+								<p><?php the_field('company_intro'); ?></p>
 
+							</div>
+						</div>
+					</div>
+
+						<?php endwhile; ?>
+									
+						<?php wp_reset_postdata(); ?>
+						
+						<?php else : ?>
+							<p><?php _e( 'No Current Investments' ); ?></p>
+				<?php endif; ?>
+
+				<?php 
+				$args = array (
+					'post_type' => 'portfolio',
+					'posts_per_page' => '10',
+					'meta_key' => 'investment_status',
+					'meta_value' => 'exited_investments'
+				);
+				$the_query = new WP_Query( $args ); 
+				?>
+				
+				<?php if ( $the_query->have_posts() ) : ?>	
+					<div class="content-box col newslist container-fluid" id="exited">
+						
+						<?php while ( $the_query->have_posts() ) : $the_query->the_post(); 
+						$image = get_field('logo');
+						?>
+						
+						<div class="news-item row ">
+							<div class="col-md-2 ">
+								<?php echo wp_get_attachment_image( $image['ID'], 'full' ); ?>
+							</div>					
+							<div class="col-md-10 col-lg-6">
+								<h5><?php the_title(); ?></h5>
+								<p><?php the_field('company_intro'); ?></p>
+
+							</div>
+						</div>
+					</div>
+
+						<?php endwhile; ?>
+								
+						<?php wp_reset_postdata(); ?>
+					
+						<?php else : ?>
+							<p><?php _e( 'No Current Investments' ); ?></p>
+				<?php endif; ?>
+			</div>	
+		</div>
+	</div>
+</section>
+  
+<?php endif;
+?>
 </main><!-- #main -->
 <?php endwhile; ?>
 

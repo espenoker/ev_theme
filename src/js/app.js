@@ -30,4 +30,9 @@ hamburgerTag.addEventListener("click", function (event) {
     
 })
 
+$(".toggle-tabs li").click(function(){
+    $(this).addClass('active-tab').parents('ul.toggle-tabs').find('li').not($(this)).removeClass('active-tab');
+    var currentTabIndex = $(this).index();
+    $('.content-box:eq('+ currentTabIndex +')').addClass('active-content-box').parents('.tabbed-content-wrap').find('.content-box').not($('.content-box:eq('+ currentTabIndex +')')).removeClass('active-content-box');
+   });
 

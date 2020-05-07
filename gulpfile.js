@@ -47,7 +47,10 @@ gulp.task("css", function(){
 
 
 gulp.task("js", function(){
-   return gulp.src("src/js/*")
+   return gulp.src([
+    "node_modules/bootstrap/js/dist/modal.js",   
+    "src/js/*",
+    ])
     .pipe(
         webpack({
             mode: 'production',
