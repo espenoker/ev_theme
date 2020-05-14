@@ -237,6 +237,16 @@ if( function_exists('acf_add_options_page') ) {
         'menu_title' 	=> 'Global settings',
         'menu_slug' 	=> 'global-site-settings',
         'icon_url' => 'dashicons-admin-site-alt3',
+        'position' => 23
+
+	) );
+	
+	acf_add_options_page( array(
+
+        'page_title' 	=> 'EV Map',
+        'menu_title' 	=> 'EV Map',
+        'menu_slug' 	=> 'map',
+        'icon_url' => 'dashicons-admin-site',
         'position' => 22
 
     ) );

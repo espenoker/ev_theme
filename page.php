@@ -327,70 +327,71 @@ get_header();
 		);
 	?>
 
-			<div class="col-md-10 offset-md-1 container-fluid">
+			<div class="col-md-10 offset-md-1 container-fluid team">
 			<h3>The People</h3>
 			
 				<div class="row no-gutters">
 					<div class="col-md-2">
-						<ul>
+						<ul class="filter">
+							<li><a href="#all" class="active" data-location>All</a></li>
 						<?php if ( ! empty( $terms ) && is_array( $terms ) ) {
 							foreach ( $terms as $term ) { ?>
 								<li>
-									<a href="#" data-location="<?php echo $term->name; ?>"><?php echo $term->name; ?></a>
+									<a href="#<?php echo $term->name; ?>" data-location="<?php echo $term->name; ?>"><?php echo $term->name; ?></a>
 								</li>
 						<?php } }  ?>
 
 						<ul>
 					</div>
-					<div class="col-md-10">
+					<div class="col-md-10 team_people">
 					<div class="row ">
 					<?php while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
 					<?php $location = get_field('location'); ?>
-						<div class="col-md-6" data-location="<?php echo esc_html( $location->name ); ?>">
-						<a href="#" data-toggle="modal" data-target="#<?php echo str_replace(' ', '', get_the_title()); ?>">
-							<div class="image_wrapper aspect-ratio ar-1-1">
-								<?php the_post_thumbnail('full'); ?>
-							</div>
-						</a>
-						<h5><?php the_title(); ?></h5>
-						<p><?php the_field('title'); ?></p>
-						<a href="#" data-toggle="modal" data-target="#<?php echo str_replace(' ', '', get_the_title()); ?>">
-								+
-						</a>
-						<div class="modal fade" id="<?php echo str_replace(' ', '', get_the_title()); ?>" tabindex="-1" role="dialog" aria-labelledby="<?php echo str_replace(' ', '', get_the_title()); ?>" aria-hidden="true">
-							<div class="modal-dialog modal-dialog-centered" role="document">
-								<div class="modal-content blue">
-									
-										<a href="#close" class="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-										</a>
-							
+						<div class="col-md-6 team_person active" data-location="<?php echo esc_html( $location->name ); ?>">
+							<a href="#" data-toggle="modal" data-target="#<?php echo str_replace(' ', '', get_the_title()); ?>">
+								<div class="image_wrapper aspect-ratio ar-1-1">
+									<?php the_post_thumbnail('full'); ?>
+								</div>
+							</a>
+							<h5><?php the_title(); ?></h5>
+							<p><?php the_field('title'); ?></p>
+							<a href="#" data-toggle="modal" data-target="#<?php echo str_replace(' ', '', get_the_title()); ?>">
+									+
+							</a>
+							<div class="modal fade" id="<?php echo str_replace(' ', '', get_the_title()); ?>" tabindex="-1" role="dialog" aria-labelledby="<?php echo str_replace(' ', '', get_the_title()); ?>" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered" role="document">
+									<div class="modal-content blue">
+										
+											<a href="#close" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</a>
+								
 
-									<div class="modal-body">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-md-3 offset-md-1">
-													<h2><?php the_title(); ?></h2>
-													<p><?php the_field('title'); ?></p>
-													<?php 
-													$location = get_field('location');
-													if( $location ): ?>
-														<p><?php echo esc_html( $location->name ); ?></p>
-													<?php endif; ?>
-													<p><a href="mailto:<?php the_field('email'); ?>"><?php the_field('email'); ?></a></p>
-													<p><a href="<?php the_field('link'); ?>"><?php the_field('link_text'); ?></a></p>
-												</div>
-												<div class="col-md-6 offset-md-1">
-													<?php the_field('bio'); ?>
+										<div class="modal-body">
+											<div class="container-fluid">
+												<div class="row">
+													<div class="col-md-3 offset-md-1">
+														<h2><?php the_title(); ?></h2>
+														<p><?php the_field('title'); ?></p>
+														<?php 
+														$location = get_field('location');
+														if( $location ): ?>
+															<p><?php echo esc_html( $location->name ); ?></p>
+														<?php endif; ?>
+														<p><a href="mailto:<?php the_field('email'); ?>"><?php the_field('email'); ?></a></p>
+														<p><a href="<?php the_field('link'); ?>"><?php the_field('link_text'); ?></a></p>
+													</div>
+													<div class="col-md-6 offset-md-1">
+														<?php the_field('bio'); ?>
+													</div>
 												</div>
 											</div>
 										</div>
+
+
 									</div>
-
-
 								</div>
 							</div>
-						</div>
 
 						</div>
 						<?php endwhile; ?>
@@ -481,7 +482,9 @@ get_header();
 				<?php wp_reset_postdata(); ?>
 				<?php endif; ?>
             </div>
-        </section>
+		</section>
+	<?php elseif( get_row_layout() == 'map' ): ?>
+		<?php get_template_part( 'template-parts/ev_map' ); ?>
 	<?php endif; ?>
 
 
