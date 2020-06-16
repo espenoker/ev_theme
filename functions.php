@@ -146,6 +146,8 @@ add_action( 'widgets_init', 'ev_widgets_init' );
 function ev_scripts() {
 	wp_enqueue_style( 'ev-style', get_template_directory_uri() . '/css/app.css', array(), _S_VERSION );
 
+	wp_enqueue_script('jquery');
+
 	wp_enqueue_script( 'ev-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 
 	wp_enqueue_script( 'ev-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), _S_VERSION, true );
@@ -252,3 +254,11 @@ if( function_exists('acf_add_options_page') ) {
     ) );
 	
 }
+
+// Activate WordPress Maintenance Mode
+//function wp_maintenance_mode() {
+//   if (!current_user_can('edit_themes') || !is_user_logged_in()) {
+//       wp_die('<h1>Under Maintenance</h1><br />');
+// }
+// }
+// add_action('get_header', 'wp_maintenance_mode');

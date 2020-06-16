@@ -11,7 +11,9 @@ get_header();
 ?>
 
 	<main id="primary" class="site-main">
-
+		<section class="container-fluid">
+			<div class="row">
+				<div class="col-md-10 offset-md-1">
 		<?php if ( have_posts() ) : ?>
 
 			<header class="page-header">
@@ -45,9 +47,11 @@ get_header();
 
 		endif;
 		?>
+	</div>	
+	</div>
 
+	<section>
 	</main><!-- #main -->
 
 <?php
-get_sidebar();
 get_footer();

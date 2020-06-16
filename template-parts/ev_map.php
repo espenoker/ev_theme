@@ -32,28 +32,24 @@
 						<?php $imagestart = get_field('map_image_start', 'option'); ?>
 						<?php echo wp_get_attachment_image( $imagestart['ID'], 'full' ); ?>
 					</div>
+					<?php
+						$rows = get_field('map_info', 'option'); // get all the rows
+						$first_row = $rows[0]; // get the first row
+						$number = $first_row['number']; // get the sub field value 
+						$text = $first_row['text'];
+						?>
 					<div class="col-md-4 offset-md-1" id="counter">
-						<h2>+ <span class="counter-value" data-count="300">0</span></h2>
-						<p>Years combined team experience within management, private equity and finance</p>
+						<h2 class="full-width number">+<span class="counter-value" data-count="<?php echo $number ?>">0</span></h2>
+						<p><?php echo $text ?></p>
 					</div>
 					<div class="col-md-6">
 						<div class="row">
-							<div class="col-6">
-								<h3>+ 20</h3>
-								<p>Portfolio companies</p>
+						<?php if(get_field('map_info', 'option')): $i = 0; while(has_sub_field('map_info', 'option')): $i++; if ($i != 1): ?>
+							<div class="col-6 map-info">
+								<h3 class="number">+<?php the_sub_field('number'); ?></h3>
+								<p><?php the_sub_field('text'); ?></p>
 							</div>	
-							<div class="col-6">
-								<h3>+ 20</h3>
-								<p>Portfolio companies</p>
-							</div>	
-							<div class="col-6">
-								<h3>+ 20</h3>
-								<p>Portfolio companies</p>
-							</div>	
-							<div class="col-6">
-								<h3>+ 20</h3>
-								<p>Portfolio companies</p>
-							</div>	
+						<?php endif; endwhile; endif; ?>							
 						</div>
 					</div>
 
@@ -69,7 +65,7 @@
 								<?php echo wp_get_attachment_image( $image['ID'], 'full' ); ?>
 							</div>
 							<div class="col-md-4 offset-md-1">
-								<h2><?php echo ($title); ?></h2>
+								<h3><?php echo ($title); ?></h3>
 							</div>
 							<?php if( have_rows('locations')): while ( have_rows('locations')) : the_row(); ?>
 							<div class="col-md-2">		
@@ -84,15 +80,16 @@
 								<?php echo wp_get_attachment_image( $image['ID'], 'full' ); ?>
 							</div>
 							<div class="col-md-4 offset-md-1">
-								<h2><?php echo ($title); ?></h2>
+								<h3><?php echo ($title); ?></h3>
 							</div>
 							<?php if( have_rows('region')): ?>
 							<div class="col-md-6 ">
 							<?php while ( have_rows('region')) : the_row(); ?>
-								<h2><?php the_sub_field('region_title'); ?></h2>
-								<div class="row">
+							<div class="region-wrapper"><h3><?php the_sub_field('region_title'); ?></h3>
+								<div class="companies">
 								<?php if( have_rows('city')): while ( have_rows('city')) : the_row(); ?>
-									<div class="col-4">
+									<div class="grid-sizer"></div>
+									<div class="city col-md-12 col-lg-6 col-xl-4">
 									<h5><?php the_sub_field('city_name'); ?></h5>
 									<?php if( have_rows('companies')): while ( have_rows('companies')) : the_row(); ?>
 									
@@ -101,41 +98,16 @@
 											$post = $post_object;
 											setup_postdata( $post ); 
 										?>
+										<?php $strippedtitle = preg_replace("/[^a-zA-Z]+/", '', get_the_title()); ?>
 										<p>
-											<a href="#<?php echo str_replace(' ', '', get_the_title()); ?>" data-toggle="modal" data-target="#<?php echo str_replace(' ', '', get_the_title()); ?>">
+											<a href="#" data-toggle="modal" data-target="#<?php echo $strippedtitle; ?>">
 												<?php the_title(); ?>
 											</a>
 											<?php if(get_sub_field('hq')) : ?>
 												<span>(HQ)</span> </p>
 											<?php endif; ?>
-											<div class="modal fade" id="<?php echo str_replace(' ', '', get_the_title()); ?>" tabindex="-1" role="dialog" aria-labelledby="<?php echo str_replace(' ', '', get_the_title()); ?>" aria-hidden="true">
-												<div class="modal-dialog modal-dialog-centered" role="document">
-													<div class="modal-content blue">
-														
-															<a href="#close" class="close" data-dismiss="modal" aria-label="Close">
-																<span aria-hidden="true">&times;</span>
-															</a>
-												
-
-														<div class="modal-body">
-															<div class="container-fluid">
-																<div class="row">
-																	<div class="col-md-3 offset-md-1">
-																		<h2><?php the_title(); ?></h2>
-																		<p><a href="<?php the_field('website'); ?>"><?php the_field('website'); ?></a></p>
-																		<p>HQ: <?php the_field('hq'); ?></p>
-																		<p>Stage: <?php the_field('stage'); ?></p>
-																	</div>
-																	<div class="col-md-6 offset-md-1">
-																		<?php the_field('company_intro'); ?>
-																	</div>
-																</div>
-															</div>
-														</div>
-
-
-													</div>
-												</div>
+											<div class="modal fade" id="<?php echo $strippedtitle; ?>" tabindex="-1" role="dialog" aria-labelledby="<?php echo $strippedtitle; ?>" aria-hidden="true">
+												<?php get_template_part( 'template-parts/ev_company_modal' ); ?>								
 											</div>
 											
 										<?php wp_reset_postdata(); // IMPORTANT - reset the $post object so the rest of the page works correctly ?>
@@ -146,7 +118,7 @@
 
 								<?php endwhile; endif; ?><!--City-->
 							</div>											
-
+											</div>
 							<?php endwhile; endif; ?><!--region-->
 							</div>
 
@@ -157,7 +129,7 @@
 								<?php echo wp_get_attachment_image( $image['ID'], 'full' ); ?>
 							</div>
 							<div class="col-md-4 offset-md-1">
-								<h2><?php echo ($title); ?></h2>
+								<h3><?php echo ($title); ?></h3>
 							</div>
 							<?php if( have_rows('members')): ?>
 							<div class="col-md-6">
@@ -179,7 +151,7 @@
 								<?php echo wp_get_attachment_image( $image['ID'], 'full' ); ?>
 							</div>
 							<div class="col-md-4 offset-md-1">
-								<h2><?php echo ($title); ?></h2>
+								<h3><?php echo ($title); ?></h3>
 							</div>
 							<?php if( have_rows('partners')): ?>
 							<div class="col-md-6">
@@ -201,3 +173,7 @@
 		<?php endif; ?>
 	</div>
 </section>
+<script>
+
+
+</script>

@@ -39,10 +39,10 @@
             </div>
         </div>
         <div class="page-footer row">
-            <div class="col-md-3 offset-3">
+            <div class="col-md-3 offset-md-3">
                 <p>© EV Private Equity 2020. All Rights Reserved.</p>
             </div>
-            <div class="col-md-4 offset-1">
+            <div class="col-md-4 offset-md-1">
 				<?php the_field('register', 'option'); ?>
             </div>
         </div>

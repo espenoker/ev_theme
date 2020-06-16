@@ -1,6 +1,8 @@
 import jquery from 'jquery';
 import $ from 'jquery';
 import 'slick-carousel';
+var Masonry = require('masonry-layout');
+ 
 
 $(".slider-wrapper").on("init", function(event, slick){
     $(".count").text(parseInt(slick.currentSlide + 1) + '/' + slick.slideCount);
@@ -39,22 +41,30 @@ $(".toggle-tabs li").click(function(){
    
 	
  
-$(".team .filter li a").click(function(e){
+
+
+
+
+
+
+
+$(".list .filter li a").click(function(e){
     showinRange($(this));
+  
 })
 
-$('.team .filter li a').click(function(e){
+$('.list .filter li a').click(function(e){
     event.stopPropagation();
 });
     
     
 function showinRange(btn) {
-    var slug = btn.attr("data-location");
+    var slug = btn.attr("data-range");
     
-    $(".team_people .team_person").removeClass("active");
+    $(".list .list-item").removeClass("active");
     
-    $(".team_people .team_person").each(function(e){
-        var categories = $(this).attr("data-location");
+    $(".list .list-item").each(function(e){
+        var categories = $(this).attr("data-range");
         if (categories) {
             if (categories.indexOf(slug) > -1)
                 $(this).toggleClass("active");
@@ -62,71 +72,113 @@ function showinRange(btn) {
         }
     })
 
-    $(".team .filter li a").removeClass("active");
+    $(".list .filter li a").removeClass("active");
     btn.addClass("active");
 }
 
-$("#map .filter a").click(function(e){
+
+
+
+
+
+
+
+
+$(".portfolio .filter li a").click(function(e){
     showinRange2($(this));
+   
 })
 
-$('#map .filter a').click(function(e){
+
+$('.portfolio .filter li a').click(function(e){
     event.stopPropagation();
+
 });
+
     
     
 function showinRange2(btn) {
-    var slug = btn.attr("data-tab");
-    
-    $("#map .tabs .tab").removeClass("active");
+    var slug = btn.attr("data-category");
+
+    $(".portfolio_items .portfolio_item").removeClass("actives");
 
     
-    $("#map .tabs .tab").each(function(e){
-        var categories = $(this).attr("data-tab");
+    $(".portfolio_items .portfolio_item").each(function(e){
+        var categories = $(this).attr("data-category");
         if (categories) {
             if (categories.indexOf(slug) > -1)
-                if ($(this).hasClass("active")){
-                    $(this).removeClass("active");
-                } else {
-                    $(this).addClass("active");
-                }
+                $(this).toggleClass("actives");
                 
         }
     })
 
-    $("#map .filter a").removeClass("active");
-    btn.addClass("active");
+    $(".portfolio .filter li a").removeClass("actives");
+    btn.addClass("actives");
+       
 }
+
+
+$("#nav-tab .nav-item").click(function(e){
+    $(".portfolio_items .portfolio_item").removeClass("actives");
+    $(".portfolio_items .portfolio_item").addClass("actives");
+
+})
+
     
 var a = 0;
-$(window).scroll(function() {
+function scrollo() {
 
   var oTop = $('#counter').offset().top - window.innerHeight;
-  if (a == 0 && $(window).scrollTop() > oTop) {
-    $('.counter-value').each(function() {
-      var $this = $(this),
-        countTo = $this.attr('data-count');
-      $({
-        countNum: $this.text()
-      }).animate({
-          countNum: countTo
-        },
+  
+    if (a == 0 && $(window).scrollTop() > oTop) {
+        $('.counter-value').each(function() {
+        var $this = $(this),
+            countTo = $this.attr('data-count');
+        $({
+            countNum: $this.text()
+        }).animate({
+            countNum: countTo
+            },
 
-        {
+            {
 
-          duration: 2000,
-          easing: 'swing',
-          step: function() {
-            $this.text(Math.floor(this.countNum));
-          },
-          complete: function() {
-            $this.text(this.countNum);
-            //alert('finished');
-          }
+            duration: 1600,
+            easing: 'swing',
+            step: function() {
+                $this.text(Math.floor(this.countNum));
+            },
+            complete: function() {
+                $this.text(this.countNum);
+            }
 
+            });
         });
-    });
-    a = 1;
-  }
+        a = 1;
+    }
+
+    }
+
+$(window).scroll(function(e){
+    var counterr = document.querySelector("#counter")
+    if (counterr == null){
+        /*donoting*/
+    }
+    else{
+    scrollo();
+    }
+});
+
+	
+
+
+var msnry = new Masonry( '#map .companies', {
+    itemSelector: '.col-4',
+    columnWidth: '.grid-sizer',
+    percentPosition: true
 
 });
+
+
+
+
+    

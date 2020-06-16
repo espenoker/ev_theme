@@ -19,7 +19,7 @@ get_header();
 
 	<?php if ( have_posts() ) : ?>	
 			<div class="col-md-10 offset-md-1 newslist container-fluid">
-				<h3>Latest news</h3>
+				<h3><?php the_archive_title(); ?></h3>
 			<?php while ( have_posts() ) : the_post(); ?>
 			<?php $exerp = get_the_excerpt();
 				$newsExerp = strip_tags($exerp);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Newspage
+ * Template Name: News
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
@@ -12,9 +12,8 @@ get_header();
 
 <main>
 <?php	while ( have_posts() ) : the_post(); ?>
-<main>
 
-
+<!--
 <section class="container-fluid title-section">
 <div class="row">
 	<div class="col-md-5 offset-md-1">
@@ -26,75 +25,96 @@ get_header();
 		</div>
 	</div>
 </div>
-</section>		
-<section class="container-fluid" id="news">
+</section>		-->
+<section class="container-fluid">
 	<div class="row">
 	
-	<?php 
-	$args = array (
-		'post_type' => 'post',
-		'posts_per_page' => '10',
-	);
-	$the_query = new WP_Query( $args ); 
-	?>
+			<?php 
+			$args = array (
+				'post_type' => 'post',
+				'order' => 'ASC',
+				'posts_per_page' => '-1',
 
-	<?php if ( $the_query->have_posts() ) : ?>	
-		<div class="col-md-10 offset-md-1 newslist container-fluid">
-				<h3>Latest news</h3>
-				<?php while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
-				<?php $exerp = get_the_excerpt();
-					$newsExerp = strip_tags($exerp);
-						if (strlen($newsExerp) > 250) {
-							$stringCut = substr($newsExerp, 0, 250);
-							$newsExerp = substr($stringCut, 0, strrpos($stringCut, ' ')).'...'; 
-						}
-					?>
-				<div class="news-item row no-gutters">
-					<div class="col-md-4 col-lg-6">
-						<p><?php
-							$category = get_the_category(); 
-							echo $category[0]->cat_name;
-							?>
-						</p>
-						<time datetime="<?php echo get_the_date('c'); ?>" itemprop="datePublished"><?php echo get_the_date('F j'); ?></br><?php echo get_the_date('Y'); ?></time>
-					</div>
-					<div class="col-md-8 col-lg-6">
-						<h5><?php the_title(); ?></h5>
-						<p><?php echo $newsExerp; ?></p>
-						<a class="link_button" href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">Read more</a>
-					</div>
+			);
+
+			$the_query = new WP_Query( $args ); ?>
+
+			<?php if ( $the_query->have_posts() ) : ?>	
+
+			<?php // Get the taxonomy's terms
+				$terms = get_terms(
+					array(
+						'taxonomy'   => 'category',
+						'hide_empty' => true,
+					)
+				);
+			?>
+
+		<div class="col-md-10 offset-md-1 container-fluid news list" id="news">
+			<div class="row">
+				<div class="col">
+					<h3>Latest news</h3>
 				</div>
-			
-			<?php endwhile; ?>
-			<div class="pagination">
-				<?php 
-					echo paginate_links( array(
-						'base'         => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
-						'total'        => $the_query->max_num_pages,
-						'current'      => max( 1, get_query_var( 'paged' ) ),
-						'format'       => '?paged=%#%',
-						'show_all'     => false,
-						'type'         => 'plain',
-						'end_size'     => 1,
-						'mid_size'     => 1,
-						'prev_next'    => true,
-						'prev_text'    => _( 'Previous'),
-						'next_text'    => _( 'Next'),
-						'add_args'     => true,
-						'add_fragment' => '#news',
-					) );
-				?>
+			</div>
+			<div class="row no-gutters">
+				<div class="col-md-2">
+					<ul class="filter">
+						<li><a href="#news" class="active" data-range>All</a></li>
+					<?php if ( ! empty( $terms ) && is_array( $terms ) ) {
+						foreach ( $terms as $term ) { ?>
+							<li>
+								<a href="#news" data-range="<?php echo $term->name; ?>"><?php echo $term->name; ?></a>
+							</li>
+					<?php } }  ?>
+
+
+					<!--<h5>Archive:</h5>
+					<?php wp_get_archives( array( 'type' => 'yearly') ); ?>-->
+					</ul>
+					<div class="space"></div>
+
+					
+				</div>
+				<div class="col-md-10 newslist">
+						<?php while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
+							<?php $exerp = get_the_excerpt();
+								$newsExerp = strip_tags($exerp);
+									if (strlen($newsExerp) > 250) {
+										$stringCut = substr($newsExerp, 0, 250);
+										$newsExerp = substr($stringCut, 0, strrpos($stringCut, ' ')).'...'; 
+									}
+								?>
+							<?php $category = get_the_category(); ?>
+							<div class="list-item news-item row no-gutters fadeinleft active" data-range="<?php echo esc_html( $category[0]->cat_name ); ?>"> 
+								<div class="col-md-4 col-lg-6 details">
+									<p><?php
+										$category = get_the_category(); 
+										echo $category[0]->cat_name;
+										?>
+									</p>
+									<time datetime="<?php echo get_the_date('c'); ?>" itemprop="datePublished"><?php echo get_the_date('F j'); ?><span><?php echo get_the_date('Y'); ?></span></time>
+								</div>
+								<div class="col-md-8 col-lg-6">
+									<h5><?php the_title(); ?></h5>
+									<p><?php echo $newsExerp; ?></p>
+									<a class="link_button" href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">Read more</a>
+								</div>
+							</div>
+					
+						<?php endwhile; ?>								
+				</div>
 			</div>
 		
 		<?php wp_reset_postdata(); ?>
 		
 		<?php else : ?>
-			<p><?php _e( 'Sorry, no posts matched your criteria.' ); ?></p>
+			<p><?php _e( 'Sorry, no news.' ); ?></p>
 		<?php endif; ?>
 		</div>
-</section>
-</main>
+	</section>
+
 <?php endwhile; ?>
+</main>
 
 <?php
 get_footer();
